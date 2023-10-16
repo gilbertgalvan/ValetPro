@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var ticketNumber = 264084
     //@State private var showTicket = false
-    @State private var ticketList: [Int] = []
+    @State private var ticketList: [Vehicle] = []
         
     var body: some View {
         VStack{
@@ -25,7 +25,14 @@ struct ContentView: View {
                         Image(systemName: "plus.app.fill")
                         Button("New Ticket"){
                             ticketNumber += 1
-                            ticketList.insert(ticketNumber, at: 0)
+                            let newVehicle = Vehicle(
+                                color: "Red",
+                                make: "Toyota",
+                                model: "Camry",
+                                parkingSpot: "A23",
+                                ticketNumber: ticketNumber,
+                                creationDate: Date())
+                            ticketList.insert(newVehicle, at: 0)
                         }
                     }
                     Spacer()
@@ -33,20 +40,50 @@ struct ContentView: View {
             ScrollView{
                     Spacer()
                     LazyVStack{
-                        ForEach(ticketList, id: \.self) { ticket in
-                            CustomHStackView(ticketNumber: ticket)
+                        ForEach(ticketList, id: \.ticketNumber) { Vehicle in
+                            Vehicle
                                 .border(Color.black,width:2)
                                 .padding(5)
                         }
                     }
                 }
-            //footer goes here
+                HStack{
+                    Button("Current"){}
+                    Button("Texts"){}
+                    Button("Recent"){}
+                    Button("Settings"){}
+                }
             }
         }
     }
     
-    struct CustomHStackView: View {
+    struct Vehicle: View {
         var ticketNumber: Int
+        var color: String
+        var make: String
+        var model: String
+        var parkingSpot: String
+        var creationDate: Date
+        
+        init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, creationDate: Date) {
+                self.color = color
+                self.make = make
+                self.model = model
+                self.parkingSpot = parkingSpot
+                self.ticketNumber = ticketNumber
+                self.creationDate = creationDate
+        }
+        
+        init() {
+                self.init(
+                    color: "Unknown",
+                    make: "Unknown",
+                    model: "Unknown",
+                    parkingSpot: "Unknown",
+                    ticketNumber: 0,
+                    creationDate: Date()
+                )
+        }
         
         var body: some View {
             HStack {
@@ -54,7 +91,7 @@ struct ContentView: View {
                 VStack {
                     Text("\(ticketNumber)")
                         .font(.system(size: 25))
-                    Text("10/17/23")
+                    Text("\(formattedDate)")
                         .font(.system(size: 15))
                 }
                 Spacer()
@@ -72,6 +109,11 @@ struct ContentView: View {
                 Spacer()
             }
         }
+        private var formattedDate: String {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MM/dd/yy HH:mm"
+                return dateFormatter.string(from: creationDate)
+            }
     }
     
     
