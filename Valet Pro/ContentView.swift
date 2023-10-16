@@ -13,28 +13,34 @@ struct ContentView: View {
     @State private var ticketList: [Int] = []
         
     var body: some View {
-        
         VStack{
-            HStack{
-                Spacer()
-                Text("Search")
-                Spacer()
-                Image(systemName:"magnifyingglass")
-                Spacer()
-                VStack{
-                    Image(systemName: "plus.app.fill")
-                    Button("New Ticket"){
-                        ticketNumber += 1
-                        ticketList.insert(ticketNumber, at: 0)
+            VStack{
+                HStack{
+                    Spacer()
+                    Text("Search")
+                    Spacer()
+                    Image(systemName:"magnifyingglass")
+                    Spacer()
+                    VStack{
+                        Image(systemName: "plus.app.fill")
+                        Button("New Ticket"){
+                            ticketNumber += 1
+                            ticketList.insert(ticketNumber, at: 0)
+                        }
+                    }
+                    Spacer()
+                }
+            ScrollView{
+                    Spacer()
+                    LazyVStack{
+                        ForEach(ticketList, id: \.self) { ticket in
+                            CustomHStackView(ticketNumber: ticket)
+                                .border(Color.black,width:2)
+                                .padding(5)
+                        }
                     }
                 }
-                Spacer()
-            }
-            Spacer()
-            ForEach(ticketList, id: \.self) { ticket in
-                CustomHStackView(ticketNumber: ticket)
-                    .border(Color.black,width:2)
-                    .padding(5)
+            //footer goes here
             }
         }
     }
