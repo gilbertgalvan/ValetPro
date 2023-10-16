@@ -9,53 +9,52 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var ticketNumber = 264084
-    //@State private var showTicket = false
     @State private var ticketList: [Vehicle] = []
+    @State private var isAddingTicket = false
+
         
     var body: some View {
-        VStack{
-            VStack{
-                HStack{
-                    Spacer()
-                    Text("Search")
-                    Spacer()
-                    Image(systemName:"magnifyingglass")
-                    Spacer()
-                    VStack{
-                        Image(systemName: "plus.app.fill")
-                        Button("New Ticket"){
-                            ticketNumber += 1
-                            let newVehicle = Vehicle(
-                                color: "Red",
-                                make: "Toyota",
-                                model: "Camry",
-                                parkingSpot: "A23",
-                                ticketNumber: ticketNumber,
-                                creationDate: Date())
-                            ticketList.insert(newVehicle, at: 0)
+            VStack {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Text("Search")
+                        Spacer()
+                        Image(systemName: "magnifyingglass")
+                        Spacer()
+                        VStack {
+                            Image(systemName: "plus.app.fill")
+                            Button("New Ticket") {
+                                isAddingTicket = true
+                            }
+                            .sheet(isPresented: $isAddingTicket) {
+                                TicketCreationView(ticketNumber: $ticketNumber) { vehicle in
+                                    ticketList.insert(vehicle, at: 0)
+                                    isAddingTicket = false
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
+                    ScrollView {
+                        Spacer()
+                        LazyVStack {
+                            ForEach(ticketList, id: \.ticketNumber) { vehicle in
+                                vehicle
+                                    .border(Color.black, width: 2)
+                                    .padding(5)
+                            }
                         }
                     }
-                    Spacer()
-                }
-            ScrollView{
-                    Spacer()
-                    LazyVStack{
-                        ForEach(ticketList, id: \.ticketNumber) { Vehicle in
-                            Vehicle
-                                .border(Color.black,width:2)
-                                .padding(5)
-                        }
+                    HStack {
+                        Button("Current") {}
+                        Button("Texts") {}
+                        Button("Recent") {}
+                        Button("Settings") {}
                     }
-                }
-                HStack{
-                    Button("Current"){}
-                    Button("Texts"){}
-                    Button("Recent"){}
-                    Button("Settings"){}
                 }
             }
         }
-    }
     
     struct Vehicle: View {
         var ticketNumber: Int
@@ -70,7 +69,7 @@ struct ContentView: View {
                 self.make = make
                 self.model = model
                 self.parkingSpot = parkingSpot
-                self.ticketNumber = ticketNumber
+                self.ticketNumber = ticketNumber + 1
                 self.creationDate = creationDate
         }
         
@@ -116,7 +115,38 @@ struct ContentView: View {
             }
     }
     
-    
+    struct TicketCreationView: View {
+        @Binding var ticketNumber: Int
+        @State private var color: String = ""
+        @State private var make: String = ""
+        @State private var model: String = ""
+        @State private var parkingSpot: String = ""
+
+        let onCreation: (Vehicle) -> Void
+
+        var body: some View {
+            Form {
+                TextField("Color", text: $color)
+                TextField("Make", text: $make)
+                TextField("Model", text: $model)
+                TextField("Parking Spot", text: $parkingSpot)
+                
+                Button("Save") {
+                    let newVehicle = Vehicle(
+                        color: color,
+                        make: make,
+                        model: model,
+                        parkingSpot: parkingSpot,
+                        ticketNumber: ticketNumber,
+                        creationDate: Date()
+                    )
+                    ticketNumber += 1
+                    onCreation(newVehicle)
+                }
+            }
+            .navigationTitle("Create Ticket")
+        }
+    }
     
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
