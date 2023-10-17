@@ -47,10 +47,27 @@ struct ContentView: View {
                         }
                     }
                     HStack {
-                        Button("Current") {}
-                        Button("Texts") {}
-                        Button("Recent") {}
-                        Button("Settings") {}
+                        Spacer()
+                        VStack{
+                            Image(systemName: "car.side.fill")
+                            Button("Current") {}
+                        }
+                        Spacer()
+                        VStack{
+                            Image(systemName: "message.fill")
+                            Button("Texts") {}
+                        }
+                        Spacer()
+                        VStack{
+                            Image(systemName: "star.fill")
+                            Button("Recent") {}
+                        }
+                        Spacer()
+                        VStack{
+                            Image(systemName: "gear")
+                            Button("Settings") {}
+                        }
+                        Spacer()
                     }
                 }
             }
@@ -121,20 +138,43 @@ struct ContentView: View {
         @State private var make: String = ""
         @State private var model: String = ""
         @State private var parkingSpot: String = ""
+        let manufacturers = ["Toyota", "Honda", "Ford", "Chevrolet", "BMW", "Mercedes-Benz", "Audi", "Nissan", "Volkswagen"]
+        @State private var selectedManufacturer = "Toyota"
+        let colors = ["Black", "White", "Gray", "Blue", "Red", "Silver", "Orange", "Yellow", "Custom"]
+        @State private var selectedColor = "Black"
+
+
 
         let onCreation: (Vehicle) -> Void
 
         var body: some View {
             Form {
-                TextField("Color", text: $color)
-                TextField("Make", text: $make)
+                //TextField("Color", text: $color)
+                Section {
+                    Picker("Select a Color", selection: $selectedColor) {
+                        ForEach(colors, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                }
+                Section {
+                    Picker("Select a Manufacturer", selection: $selectedManufacturer) {
+                        ForEach(manufacturers, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                }
+                //TextField("Make", text: $make)
                 TextField("Model", text: $model)
                 TextField("Parking Spot", text: $parkingSpot)
                 
+                
                 Button("Save") {
                     let newVehicle = Vehicle(
-                        color: color,
-                        make: make,
+                        color: selectedColor,
+                        make: selectedManufacturer,
                         model: model,
                         parkingSpot: parkingSpot,
                         ticketNumber: ticketNumber,
