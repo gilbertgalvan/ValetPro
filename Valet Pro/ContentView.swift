@@ -11,16 +11,27 @@ struct ContentView: View {
     @State private var ticketNumber = 264084
     @State private var ticketList: [Vehicle] = []
     @State private var isAddingTicket = false
+    @State private var scrollOffset: CGFloat = 0
+    @State private var searchQuery = ""
 
-        
+    var filteredTickets: [Vehicle] {
+            if searchQuery.isEmpty {
+                return ticketList
+            } else {
+                return ticketList.filter { "\($0.ticketNumber)" == searchQuery }
+            }
+        }
+    
     var body: some View {
             VStack {
                 VStack {
                     HStack {
                         Spacer()
-                        Text("Search")
                         Spacer()
-                        Image(systemName: "magnifyingglass")
+                        TextField("Search", text: $searchQuery)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Spacer()
+                        //Image(systemName: "magnifyingglass")
                         Spacer()
                         VStack {
                             Image(systemName: "plus.app.fill")
