@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var isAddingTicket = false
     @State private var scrollOffset: CGFloat = 0
     @State private var searchQuery = ""
+    @State private var isShowingSettings = false
 
     var filteredTickets: [Vehicle] {
             if searchQuery.isEmpty {
@@ -76,7 +77,12 @@ struct ContentView: View {
                         Spacer()
                         VStack{
                             Image(systemName: "gear")
-                            Button("Settings") {}
+                            Button("Settings") {
+                                isShowingSettings = true
+                            }
+                            .sheet(isPresented: $isShowingSettings){
+                                SettingsView()
+                            }
                         }
                         Spacer()
                     }
@@ -196,6 +202,42 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Create Ticket")
+        }
+    }
+    
+    struct SettingsView: View{
+        var body: some View{
+            
+            
+            VStack{
+                HStack{
+                    Spacer()
+                    Text("Log off")
+                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .font(.system(size: 25))
+                }
+                    .border(Color.black, width: 2)
+                    .padding(5)
+                HStack{
+                    Spacer()
+                    Text("Reports")
+                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .font(.system(size: 25))
+                }
+                    .border(Color.black, width: 2)
+                    .padding(5)
+                HStack{
+                    Spacer()
+                    Text("Time Sheet")
+                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .font(.system(size: 25))
+                }
+                    .border(Color.black, width: 2)
+                    .padding(5)
+
+            }
+            
+            
         }
     }
     
