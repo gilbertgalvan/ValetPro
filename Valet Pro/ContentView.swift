@@ -7,6 +7,24 @@
 
 import SwiftUI
 
+class Vehicle: ObservableObject {
+    var ticketNumber: Int
+    @Published var color: String
+    @Published var make: String
+    @Published var model: String
+    @Published var parkingSpot: String
+    var creationDate: Date
+
+    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, creationDate: Date) {
+        self.color = color
+        self.make = make
+        self.model = model
+        self.parkingSpot = parkingSpot
+        self.ticketNumber = ticketNumber + 1
+        self.creationDate = creationDate
+    }
+}
+
 struct ContentView: View {
     @State private var ticketNumber = 264084
     @State private var ticketList: [Vehicle] = []
@@ -14,6 +32,8 @@ struct ContentView: View {
     @State private var scrollOffset: CGFloat = 0
     @State private var searchQuery = ""
     @State private var isShowingSettings = false
+    @State private var isEdittingTicket = false
+    @State private var vehicleToEdit: Vehicle?
 
     var filteredTickets: [Vehicle] {
             if searchQuery.isEmpty {
@@ -32,7 +52,6 @@ struct ContentView: View {
                         TextField("Search", text: $searchQuery)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                         Spacer()
-                        //Image(systemName: "magnifyingglass")
                         Spacer()
                         VStack {
                             Image(systemName: "plus.app.fill")
@@ -52,9 +71,13 @@ struct ContentView: View {
                         Spacer()
                         LazyVStack {
                             ForEach(ticketList, id: \.ticketNumber) { vehicle in
-                                vehicle
+                                VehicleRow(vehicle: vehicle, isEdittingTicket: $isEdittingTicket, vehicleToEdit: $vehicleToEdit)
                                     .border(Color.black, width: 2)
                                     .padding(5)
+                                    .onTapGesture{
+                                        vehicleToEdit = vehicle
+                                        isEdittingTicket = true
+                                    }
                             }
                         }
                     }
@@ -90,39 +113,16 @@ struct ContentView: View {
             }
         }
     
-    struct Vehicle: View {
-        var ticketNumber: Int
-        var color: String
-        var make: String
-        var model: String
-        var parkingSpot: String
-        var creationDate: Date
-        
-        init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, creationDate: Date) {
-                self.color = color
-                self.make = make
-                self.model = model
-                self.parkingSpot = parkingSpot
-                self.ticketNumber = ticketNumber + 1
-                self.creationDate = creationDate
-        }
-        
-        init() {
-                self.init(
-                    color: "Unknown",
-                    make: "Unknown",
-                    model: "Unknown",
-                    parkingSpot: "Unknown",
-                    ticketNumber: 0,
-                    creationDate: Date()
-                )
-        }
+    struct VehicleRow: View {
+        @ObservedObject var vehicle: Vehicle
+        @Binding var isEdittingTicket: Bool
+        @Binding var vehicleToEdit: Vehicle?
         
         var body: some View {
             HStack {
                 Spacer()
                 VStack {
-                    Text("\(ticketNumber)")
+                    Text("\(vehicle.ticketNumber)")
                         .font(.system(size: 25))
                     Text("\(formattedDate)")
                         .font(.system(size: 15))
@@ -133,10 +133,16 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 Button("Pull") {
-                    // Add your action for the "Pull" button here
                 }
                 Button("Edit") {
-                    // Add your action for the "Edit" button here
+                        vehicleToEdit = vehicle
+                        isEdittingTicket = true
+                }
+                .sheet(isPresented: $isEdittingTicket) {
+                    if let vehicle = vehicleToEdit {
+                        EdittingTicketView(vehicle: vehicle)
+                        //isEdittingTicket = false
+                    }
                 }
                 .foregroundColor(.green)
                 Spacer()
@@ -145,7 +151,7 @@ struct ContentView: View {
         private var formattedDate: String {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MM/dd/yy HH:mm"
-                return dateFormatter.string(from: creationDate)
+            return dateFormatter.string(from: vehicle.creationDate)
             }
     }
     
@@ -166,7 +172,6 @@ struct ContentView: View {
 
         var body: some View {
             Form {
-                //TextField("Color", text: $color)
                 Section {
                     Picker("Select a Color", selection: $selectedColor) {
                         ForEach(colors, id: \.self) {
@@ -183,7 +188,6 @@ struct ContentView: View {
                     }
                     .pickerStyle(WheelPickerStyle())
                 }
-                //TextField("Make", text: $make)
                 TextField("Model", text: $model)
                 TextField("Parking Spot", text: $parkingSpot)
                 
@@ -202,6 +206,41 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Create Ticket")
+        }
+    }
+    
+    public struct EdittingTicketView: View{
+        @ObservedObject var vehicle: Vehicle
+        let colors = ["Black", "White", "Gray", "Blue", "Red", "Silver", "Orange", "Yellow", "Custom"]
+        let manufacturers = ["Toyota", "Honda", "Ford", "Chevrolet", "BMW", "Mercedes-Benz", "Audi", "Nissan", "Volkswagen"]
+        
+        var body: some View {
+            Form {
+                Section {
+                    Picker("Select a Color", selection: $vehicle.color) {
+                        
+                        ForEach(colors, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                }
+                
+                Section {
+                    Picker("Select a Manufacturer", selection: $vehicle.make) {
+                        ForEach(manufacturers, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                }
+                
+                TextField("Model", text: $vehicle.model)
+                TextField("Parking Spot", text: $vehicle.parkingSpot)
+                
+            }
+                    .navigationTitle("Edit Ticket")
+            
         }
     }
     
