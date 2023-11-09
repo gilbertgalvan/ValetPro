@@ -39,7 +39,7 @@ struct ContentView: View {
             if searchQuery.isEmpty {
                 return ticketList
             } else {
-                return ticketList.filter { "\($0.ticketNumber)" == searchQuery }
+                return ticketList.filter { "\($0.ticketNumber)".contains(searchQuery)}
             }
         }
     
@@ -70,7 +70,7 @@ struct ContentView: View {
                     ScrollView {
                         Spacer()
                         LazyVStack {
-                            ForEach(ticketList, id: \.ticketNumber) { vehicle in
+                            ForEach(filteredTickets, id: \.ticketNumber) { vehicle in
                                 VehicleRow(vehicle: vehicle, isEdittingTicket: $isEdittingTicket, vehicleToEdit: $vehicleToEdit)
                                     .border(Color.black, width: 2)
                                     .padding(5)
