@@ -244,6 +244,63 @@ struct ContentView: View {
         }
     }
     
+    struct PullView: View {
+        
+        @State private var selectedValidation = 0
+        private let validationOptions = ["Validation 1","Validation 2", "Validation 3"]
+        var vehicle: Vehicle
+        
+        var body: some View{
+            VStack{
+                Picker("Select Validation",selection:$selectedValidation){
+                    ForEach(0..<validationOptions.count){index in Text(validationOptions[index])
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                Text("Ticket Number: \(vehicle.ticketNumber)")//Show the ticket number here)
+                    .font(.system(size:25))
+                Text("Total Time:")//Show the ticket number here)
+                    .font(.system(size:25))
+                Text("Total Cost:")//Show the ticket number here)
+                    .font(.system(size:25))
+                
+            }
+        }
+        
+        private var formattedTimeSpent: String{
+            
+            let timeInterval = Date().timeIntervalSince(vehicle.creationDate)
+            let hours = Int(timeInterval/3600)
+            let minutes = Int((timeInterval.truncatingRemainder(dividingBy: 3600))/60)
+            
+            return "\(hours) hours \(minutes)"
+        }
+        
+        private var formattedTotalCharge: String{
+            let totalCharge = calculateTotalCharge(validationOption: selectedValidation)
+            return String(format: "$%.2f",totalCharge)
+        }
+        
+        private func calculateTotalCharge(validationOption: Int) -> Double {
+            let timeInterval = Date().timeIntervalSince(vehicle.creationDate)
+            let hours = timeInterval / 3600
+            let portionOfAnHour = ceil(hours) // Round up to the nearest whole hour
+
+            switch validationOption {
+            case 0: // Validation 1
+                return portionOfAnHour * 5
+            case 1: // Validation 2
+                return portionOfAnHour * 10
+            case 2: // Validation 3
+                return max(portionOfAnHour - 3, 0) * 5
+            default:
+                return 0
+            }
+        }
+
+        
+    }
+    
     struct SettingsView: View{
         var body: some View{
             
