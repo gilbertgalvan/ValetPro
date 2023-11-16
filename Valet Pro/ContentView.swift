@@ -117,6 +117,9 @@ struct ContentView: View {
         @ObservedObject var vehicle: Vehicle
         @Binding var isEdittingTicket: Bool
         @Binding var vehicleToEdit: Vehicle?
+        @State private var isConfirmationSheetPresented = false
+        @State private var isPullViewPresented = false
+        //@State private var selectedVehicleForPull = Vehicle?
         
         var body: some View {
             HStack {
@@ -133,6 +136,27 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 Button("Pull") {
+                    //selectedVehicleForPull = vehicle
+                    isConfirmationSheetPresented = true
+                }
+                .sheet(isPresented: $isConfirmationSheetPresented){
+                    VStack{
+                        Text("Confirm Pull for ticket: \(vehicle.ticketNumber)")
+                            .font((.headline))
+                            .padding()
+                        Button("Confirm"){
+                            isPullViewPresented = true
+                            isConfirmationSheetPresented = false
+                        }
+                        .padding()
+                        Button("Cancel"){
+                            isConfirmationSheetPresented = false
+                        }
+                        .padding()
+                    }
+                }
+                .sheet(isPresented: $isPullViewPresented){
+                    PullView(vehicle: vehicle)
                 }
                 Button("Edit") {
                         vehicleToEdit = vehicle
@@ -247,7 +271,7 @@ struct ContentView: View {
     struct PullView: View {
         
         @State private var selectedValidation = 0
-        private let validationOptions = ["Validation 1","Validation 2", "Validation 3"]
+        private let validationOptions = ["Restaurant 1","Restaurant 2", "Restaurant 3"]
         var vehicle: Vehicle
         
         var body: some View{
@@ -259,9 +283,9 @@ struct ContentView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 Text("Ticket Number: \(vehicle.ticketNumber)")//Show the ticket number here)
                     .font(.system(size:25))
-                Text("Total Time:")//Show the ticket number here)
+                Text("Total Time: \(formattedTimeSpent)")//Show the ticket number here)
                     .font(.system(size:25))
-                Text("Total Cost:")//Show the ticket number here)
+                Text("Total Cost: \(formattedTotalCharge)")//Show the ticket number here)
                     .font(.system(size:25))
                 
             }
@@ -273,7 +297,7 @@ struct ContentView: View {
             let hours = Int(timeInterval/3600)
             let minutes = Int((timeInterval.truncatingRemainder(dividingBy: 3600))/60)
             
-            return "\(hours) hours \(minutes)"
+            return "\(hours) hours \(minutes) minutes"
         }
         
         private var formattedTotalCharge: String{
