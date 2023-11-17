@@ -140,6 +140,7 @@ struct ContentView: View {
                     isConfirmationSheetPresented = true
                 }
                 .sheet(isPresented: $isConfirmationSheetPresented){
+                    
                     VStack{
                         Text("Confirm Pull for ticket: \(vehicle.ticketNumber)")
                             .font((.headline))
@@ -155,8 +156,8 @@ struct ContentView: View {
                         .padding()
                     }
                 }
-                .sheet(isPresented: $isPullViewPresented){
-                    PullView(vehicle: vehicle)
+                    .sheet(isPresented: $isPullViewPresented){
+                        PullView(vehicle: vehicle)
                 }
                 Button("Edit") {
                         vehicleToEdit = vehicle
@@ -324,6 +325,8 @@ struct ContentView: View {
 
         
     }
+    
+    
     
     struct SettingsView: View{
         var body: some View{
