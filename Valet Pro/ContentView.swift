@@ -13,21 +13,22 @@ class Vehicle: ObservableObject {
     @Published var make: String
     @Published var model: String
     @Published var parkingSpot: String
-    var creationDate: Date
+    var arrivalDate: Date
 
-    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, creationDate: Date) {
+    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, arrivalDate: Date) {
         self.color = color
         self.make = make
         self.model = model
         self.parkingSpot = parkingSpot
         self.ticketNumber = ticketNumber + 1
-        self.creationDate = creationDate
+        self.arrivalDate = arrivalDate
     }
 }
 
 struct ContentView: View {
     @State private var ticketNumber = 264084
     @State private var ticketList: [Vehicle] = []
+    @State private var completedTicketList: [Vehicle] = []
     @State private var isAddingTicket = false
     @State private var scrollOffset: CGFloat = 0
     @State private var searchQuery = ""
@@ -71,7 +72,7 @@ struct ContentView: View {
                         Spacer()
                         LazyVStack {
                             ForEach(filteredTickets, id: \.ticketNumber) { vehicle in
-                                VehicleRow(vehicle: vehicle, isEdittingTicket: $isEdittingTicket, vehicleToEdit: $vehicleToEdit)
+                                VehicleRow(vehicle: vehicle, isEdittingTicket: $isEdittingTicket, vehicleToEdit: $vehicleToEdit,ticketList: $ticketList,completedTicketList: $completedTicketList)
                                     .border(Color.black, width: 2)
                                     .padding(5)
                                     .onTapGesture{
@@ -119,6 +120,8 @@ struct ContentView: View {
         @Binding var vehicleToEdit: Vehicle?
         @State private var isConfirmationSheetPresented = false
         @State private var isPullViewPresented = false
+        @Binding var ticketList: [Vehicle]
+        @Binding var completedTicketList: [Vehicle]
         //@State private var selectedVehicleForPull = Vehicle?
         
         var body: some View {
@@ -157,7 +160,7 @@ struct ContentView: View {
                     }
                 }
                     .sheet(isPresented: $isPullViewPresented){
-                        PullView(vehicle: vehicle)
+                        PullView(vehicle: vehicle,ticketList: $ticketList,completedTicketList: $completedTicketList)
                 }
                 Button("Edit") {
                         vehicleToEdit = vehicle
@@ -176,7 +179,7 @@ struct ContentView: View {
         private var formattedDate: String {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "MM/dd/yy HH:mm"
-            return dateFormatter.string(from: vehicle.creationDate)
+            return dateFormatter.string(from: vehicle.arrivalDate)
             }
     }
     
@@ -224,7 +227,7 @@ struct ContentView: View {
                         model: model,
                         parkingSpot: parkingSpot,
                         ticketNumber: ticketNumber,
-                        creationDate: Date()
+                        arrivalDate: Date()
                     )
                     ticketNumber += 1
                     onCreation(newVehicle)
@@ -274,9 +277,12 @@ struct ContentView: View {
         @State private var selectedValidation = 0
         private let validationOptions = ["Restaurant 1","Restaurant 2", "Restaurant 3"]
         var vehicle: Vehicle
+        @Binding var ticketList: [Vehicle]
+        @Binding var completedTicketList: [Vehicle]
         
         var body: some View{
             VStack{
+                Spacer()
                 Picker("Select Validation",selection:$selectedValidation){
                     ForEach(0..<validationOptions.count){index in Text(validationOptions[index])
                     }
@@ -288,13 +294,29 @@ struct ContentView: View {
                     .font(.system(size:25))
                 Text("Total Cost: \(formattedTotalCharge)")//Show the ticket number here)
                     .font(.system(size:25))
-                
+                Spacer()
+                HStack{
+                    Spacer()
+                    Button("Pay") {
+                        if let index = ticketList.firstIndex(where: { $0.ticketNumber == vehicle.ticketNumber }) {
+                            let removedVehicle = ticketList.remove(at: index)
+                            // Add the removed vehicle to the completedTicketList
+                            completedTicketList.append(removedVehicle)
+                            //double remove error ticketList.remove(at: index)
+                        }
+                        
+                    }
+                    Spacer()
+                    Button("Cancel"){}
+                    Spacer()
+                }
+                Spacer()
             }
         }
         
         private var formattedTimeSpent: String{
             
-            let timeInterval = Date().timeIntervalSince(vehicle.creationDate)
+            let timeInterval = Date().timeIntervalSince(vehicle.arrivalDate)
             let hours = Int(timeInterval/3600)
             let minutes = Int((timeInterval.truncatingRemainder(dividingBy: 3600))/60)
             
@@ -307,7 +329,7 @@ struct ContentView: View {
         }
         
         private func calculateTotalCharge(validationOption: Int) -> Double {
-            let timeInterval = Date().timeIntervalSince(vehicle.creationDate)
+            let timeInterval = Date().timeIntervalSince(vehicle.arrivalDate)
             let hours = timeInterval / 3600
             let portionOfAnHour = ceil(hours) // Round up to the nearest whole hour
 
