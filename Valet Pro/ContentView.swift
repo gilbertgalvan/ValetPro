@@ -9,13 +9,15 @@ import SwiftUI
 
 class Vehicle: ObservableObject {
     var ticketNumber: Int
+    @Published var amountPayed: Int
     @Published var color: String
     @Published var make: String
     @Published var model: String
     @Published var parkingSpot: String
     var arrivalDate: Date
 
-    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, arrivalDate: Date) {
+    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, arrivalDate: Date,amountPayed:Int) {
+        self.amountPayed = amountPayed
         self.color = color
         self.make = make
         self.model = model
@@ -105,7 +107,7 @@ struct ContentView: View {
                                 isShowingSettings = true
                             }
                             .sheet(isPresented: $isShowingSettings){
-                                SettingsView()
+                                SettingsView(ticketList: ticketList, completedTicketList: $completedTicketList)
                             }
                         }
                         Spacer()
@@ -348,44 +350,122 @@ struct ContentView: View {
         
     }
     
+    struct ReportsView: View {
+        @Binding var completedTicketList: [Vehicle]
+
+        var body: some View {
+            NavigationView {
+                VStack {
+                    List {
+                        Section(header: Text("Reports")) {
+                            ForEach(["Restaurant 1", "Restaurant 2", "Restaurant 3"], id: \.self) { restaurant in
+                                HStack {
+                                    Text(restaurant)
+                                    Spacer()
+                                    Text("Count: \(countForRestaurant(restaurant))")
+                                    Text("Amount: \(amountForRestaurant(restaurant))")
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(GroupedListStyle())
+
+                    Spacer()
+
+                    HStack {
+                        Text("Total Amount:")
+                        Spacer()
+                        Text("\(totalAmount())")
+                    }
+                    .padding()
+                }
+                .navigationTitle("Reports")
+            }
+        }
+
+        private func countForRestaurant(_ restaurant: String) -> Int {
+            return completedTicketList.filter { $0.parkingSpot == restaurant }.count
+        }
+
+        private func amountForRestaurant(_ restaurant: String) -> Double {
+            let ticketsForRestaurant = completedTicketList.filter { $0.parkingSpot == restaurant }
+            return ticketsForRestaurant.reduce(0) { $0 + calculateTotalCharge( timeInterval: Date().timeIntervalSince($1.arrivalDate)) }
+        }
+        
+        private func calculateTotalCharge(timeInterval: TimeInterval) -> Double {
+                let hours = timeInterval / 3600
+                let portionOfAnHour = ceil(hours) // Round up to the nearest whole hour
+
+                // Use a default validation option of 0 for simplicity
+                let validationOption = 0
+
+                switch validationOption {
+                case 0: // Validation 1
+                    return portionOfAnHour * 5
+                case 1: // Validation 2
+                    return portionOfAnHour * 10
+                case 2: // Validation 3
+                    return max(portionOfAnHour - 3, 0) * 5
+                default:
+                    return 0
+                }
+            }
+        
+        private func totalAmount() -> Double {
+            return ["Restaurant 1", "Restaurant 2", "Restaurant 3"]
+                .map { amountForRestaurant($0) }
+                .reduce(0, +)
+        }
+        
+    }
+
     
-    
-    struct SettingsView: View{
-        var body: some View{
-            
-            
-            VStack{
-                HStack{
+    struct SettingsView: View {
+        @State private var isShowingTimeSheet = false
+        @State private var isShowingReports = false
+        var ticketList: [Vehicle]
+        @Binding var completedTicketList: [Vehicle]
+
+        var body: some View {
+            VStack {
+                HStack {
                     Spacer()
                     Text("Log off")
-                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.system(size: 25))
                 }
+                .border(Color.black, width: 2)
+                .padding(5)
+
+                Button(action: {
+                    isShowingReports = true
+                }) {
+                    HStack {
+                        Spacer()
+                        Text("Reports")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.system(size: 25))
+                    }
                     .border(Color.black, width: 2)
                     .padding(5)
-                HStack{
-                    Spacer()
-                    Text("Reports")
-                        .frame(maxWidth: .infinity,alignment: .leading)
-                        .font(.system(size: 25))
                 }
-                    .border(Color.black, width: 2)
-                    .padding(5)
-                HStack{
+                .sheet(isPresented: $isShowingReports) {
+                    ReportsView(completedTicketList: $completedTicketList)
+                }
+
+                HStack {
                     Spacer()
                     Text("Time Sheet")
-                        .frame(maxWidth: .infinity,alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.system(size: 25))
                 }
-                    .border(Color.black, width: 2)
-                    .padding(5)
-
+                .border(Color.black, width: 2)
+                .padding(5)
             }
-            
-            
         }
     }
-    
+
+
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
             ContentView()
