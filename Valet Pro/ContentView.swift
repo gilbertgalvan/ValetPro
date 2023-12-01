@@ -9,14 +9,15 @@ import SwiftUI
 
 class Vehicle: ObservableObject {
     var ticketNumber: Int
-    @Published var amountPayed: Int
+    @Published var amountPayed: Double
     @Published var color: String
     @Published var make: String
     @Published var model: String
     @Published var parkingSpot: String
+    @Published var validationOption: Int?
     var arrivalDate: Date
 
-    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, arrivalDate: Date,amountPayed:Int) {
+    init(color: String, make: String, model: String, parkingSpot: String, ticketNumber: Int, arrivalDate: Date,amountPayed:Double) {
         self.amountPayed = amountPayed
         self.color = color
         self.make = make
@@ -25,6 +26,11 @@ class Vehicle: ObservableObject {
         self.ticketNumber = ticketNumber + 1
         self.arrivalDate = arrivalDate
     }
+    
+    func setValidationOption(_ option: Int) {
+        self.validationOption = option
+    }
+    
 }
 
 struct ContentView: View {
@@ -229,7 +235,8 @@ struct ContentView: View {
                         model: model,
                         parkingSpot: parkingSpot,
                         ticketNumber: ticketNumber,
-                        arrivalDate: Date()
+                        arrivalDate: Date(),
+                        amountPayed: 0.0
                     )
                     ticketNumber += 1
                     onCreation(newVehicle)
@@ -302,9 +309,11 @@ struct ContentView: View {
                     Button("Pay") {
                         if let index = ticketList.firstIndex(where: { $0.ticketNumber == vehicle.ticketNumber }) {
                             let removedVehicle = ticketList.remove(at: index)
+                            removedVehicle.setValidationOption(selectedValidation)
                             // Add the removed vehicle to the completedTicketList
                             completedTicketList.append(removedVehicle)
                             //double remove error ticketList.remove(at: index)
+                            removedVehicle.amountPayed = calculateTotalCharge(timeInterval: Date().timeIntervalSince(removedVehicle.arrivalDate),validationOption: selectedValidation)
                         }
                         
                     }
@@ -326,11 +335,11 @@ struct ContentView: View {
         }
         
         private var formattedTotalCharge: String{
-            let totalCharge = calculateTotalCharge(validationOption: selectedValidation)
+            let totalCharge = calculateTotalCharge(timeInterval: Date().timeIntervalSince(vehicle.arrivalDate),validationOption: selectedValidation)
             return String(format: "$%.2f",totalCharge)
         }
         
-        private func calculateTotalCharge(validationOption: Int) -> Double {
+        private func calculateTotalCharge(timeInterval: TimeInterval, validationOption: Int) -> Double {
             let timeInterval = Date().timeIntervalSince(vehicle.arrivalDate)
             let hours = timeInterval / 3600
             let portionOfAnHour = ceil(hours) // Round up to the nearest whole hour
@@ -354,70 +363,45 @@ struct ContentView: View {
         @Binding var completedTicketList: [Vehicle]
 
         var body: some View {
-            NavigationView {
-                VStack {
-                    List {
-                        Section(header: Text("Reports")) {
-                            ForEach(["Restaurant 1", "Restaurant 2", "Restaurant 3"], id: \.self) { restaurant in
-                                HStack {
-                                    Text(restaurant)
-                                    Spacer()
-                                    Text("Count: \(countForRestaurant(restaurant))")
-                                    Text("Amount: \(amountForRestaurant(restaurant))")
-                                }
-                            }
-                        }
-                    }
-                    .listStyle(GroupedListStyle())
-
+            VStack {
+                HStack {
                     Spacer()
-
-                    HStack {
-                        Text("Total Amount:")
-                        Spacer()
-                        Text("\(totalAmount())")
-                    }
-                    .padding()
+                    Text("Reports")
+                        .font(.system(size: 25))
                 }
-                .navigationTitle("Reports")
+                .border(Color.black, width: 2)
+                .padding(5)
+
+                // Calculate counts and totals for each restaurant
+                let restauraunt1Count = countForRestaurant(0)
+                let restauraunt2Count = countForRestaurant(1)
+                let restauraunt3Count = countForRestaurant(2)
+
+                let restauraunt1Total = calculateTotalForRestaurant(0)
+                let restaurant2Total = calculateTotalForRestaurant(1)
+                let restaurant3Total = calculateTotalForRestaurant(2)
+
+                // Display the counts and totals for each restaurant
+                Text("Restaurant 1\tcount: \(restauraunt1Count)\tTotal Amount: $\(restauraunt1Total)")
+                Text("Restaurant 2\tcount: \(restauraunt2Count)\tTotal Amount: $\(restaurant2Total)")
+                Text("Restaurant 3\tcount: \(restauraunt3Count)\tTotal Amount: $\(restaurant3Total)")
             }
         }
 
-        private func countForRestaurant(_ restaurant: String) -> Int {
-            return completedTicketList.filter { $0.parkingSpot == restaurant }.count
+        // Function to count completed tickets for a specific restaurant
+        private func countForRestaurant(_ validationOption: Int) -> Int {
+            return completedTicketList.filter { $0.validationOption == validationOption }.count
         }
 
-        private func amountForRestaurant(_ restaurant: String) -> Double {
-            let ticketsForRestaurant = completedTicketList.filter { $0.parkingSpot == restaurant }
-            return ticketsForRestaurant.reduce(0) { $0 + calculateTotalCharge( timeInterval: Date().timeIntervalSince($1.arrivalDate)) }
+        // Function to calculate total amount for a specific restaurant
+        private func calculateTotalForRestaurant(_ validationOption: Int) -> Double {
+            let total = completedTicketList
+                .filter { $0.validationOption == validationOption }
+                .reduce(0) { $0 + $1.amountPayed }
+            return total
         }
-        
-        private func calculateTotalCharge(timeInterval: TimeInterval) -> Double {
-                let hours = timeInterval / 3600
-                let portionOfAnHour = ceil(hours) // Round up to the nearest whole hour
-
-                // Use a default validation option of 0 for simplicity
-                let validationOption = 0
-
-                switch validationOption {
-                case 0: // Validation 1
-                    return portionOfAnHour * 5
-                case 1: // Validation 2
-                    return portionOfAnHour * 10
-                case 2: // Validation 3
-                    return max(portionOfAnHour - 3, 0) * 5
-                default:
-                    return 0
-                }
-            }
-        
-        private func totalAmount() -> Double {
-            return ["Restaurant 1", "Restaurant 2", "Restaurant 3"]
-                .map { amountForRestaurant($0) }
-                .reduce(0, +)
-        }
-        
     }
+
 
     
     struct SettingsView: View {
