@@ -7,13 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D8AAD2E72B1FF06400B681C6 /* Valet_ProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AAD2E62B1FF06400B681C6 /* Valet_ProTests.swift */; };
 		D8F1935B2AB0CE60000A1B98 /* Valet_ProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1935A2AB0CE60000A1B98 /* Valet_ProApp.swift */; };
 		D8F1935D2AB0CE60000A1B98 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1935C2AB0CE60000A1B98 /* ContentView.swift */; };
 		D8F1935F2AB0CE61000A1B98 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8F1935E2AB0CE61000A1B98 /* Assets.xcassets */; };
 		D8F193622AB0CE61000A1B98 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8F193612AB0CE61000A1B98 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D8AAD2E82B1FF06400B681C6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D8F1934F2AB0CE60000A1B98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D8F193562AB0CE60000A1B98;
+			remoteInfo = "Valet Pro";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		D8AAD2E42B1FF06400B681C6 /* Valet ProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Valet ProTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8AAD2E62B1FF06400B681C6 /* Valet_ProTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Valet_ProTests.swift; sourceTree = "<group>"; };
 		D8F193572AB0CE60000A1B98 /* Valet Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Valet Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8F1935A2AB0CE60000A1B98 /* Valet_ProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Valet_ProApp.swift; sourceTree = "<group>"; };
 		D8F1935C2AB0CE60000A1B98 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -22,6 +35,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		D8AAD2E12B1FF06400B681C6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D8F193542AB0CE60000A1B98 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -32,10 +52,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D8AAD2E52B1FF06400B681C6 /* Valet ProTests */ = {
+			isa = PBXGroup;
+			children = (
+				D8AAD2E62B1FF06400B681C6 /* Valet_ProTests.swift */,
+			);
+			path = "Valet ProTests";
+			sourceTree = "<group>";
+		};
 		D8F1934E2AB0CE60000A1B98 = {
 			isa = PBXGroup;
 			children = (
 				D8F193592AB0CE60000A1B98 /* Valet Pro */,
+				D8AAD2E52B1FF06400B681C6 /* Valet ProTests */,
 				D8F193582AB0CE60000A1B98 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -44,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				D8F193572AB0CE60000A1B98 /* Valet Pro.app */,
+				D8AAD2E42B1FF06400B681C6 /* Valet ProTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +100,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		D8AAD2E32B1FF06400B681C6 /* Valet ProTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8AAD2EA2B1FF06400B681C6 /* Build configuration list for PBXNativeTarget "Valet ProTests" */;
+			buildPhases = (
+				D8AAD2E02B1FF06400B681C6 /* Sources */,
+				D8AAD2E12B1FF06400B681C6 /* Frameworks */,
+				D8AAD2E22B1FF06400B681C6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8AAD2E92B1FF06400B681C6 /* PBXTargetDependency */,
+			);
+			name = "Valet ProTests";
+			productName = "Valet ProTests";
+			productReference = D8AAD2E42B1FF06400B681C6 /* Valet ProTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D8F193562AB0CE60000A1B98 /* Valet Pro */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D8F193652AB0CE61000A1B98 /* Build configuration list for PBXNativeTarget "Valet Pro" */;
@@ -94,9 +142,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					D8AAD2E32B1FF06400B681C6 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = D8F193562AB0CE60000A1B98;
+					};
 					D8F193562AB0CE60000A1B98 = {
 						CreatedOnToolsVersion = 14.3.1;
 					};
@@ -116,11 +168,19 @@
 			projectRoot = "";
 			targets = (
 				D8F193562AB0CE60000A1B98 /* Valet Pro */,
+				D8AAD2E32B1FF06400B681C6 /* Valet ProTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		D8AAD2E22B1FF06400B681C6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D8F193552AB0CE60000A1B98 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -133,6 +193,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		D8AAD2E02B1FF06400B681C6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8AAD2E72B1FF06400B681C6 /* Valet_ProTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D8F193532AB0CE60000A1B98 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -144,7 +212,60 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D8AAD2E92B1FF06400B681C6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D8F193562AB0CE60000A1B98 /* Valet Pro */;
+			targetProxy = D8AAD2E82B1FF06400B681C6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		D8AAD2EB2B1FF06400B681C6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gilbert.Valet-ProTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Valet Pro.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Valet Pro";
+			};
+			name = Debug;
+		};
+		D8AAD2EC2B1FF06400B681C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Gilbert.Valet-ProTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Valet Pro.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Valet Pro";
+			};
+			name = Release;
+		};
 		D8F193632AB0CE61000A1B98 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -318,6 +439,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		D8AAD2EA2B1FF06400B681C6 /* Build configuration list for PBXNativeTarget "Valet ProTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8AAD2EB2B1FF06400B681C6 /* Debug */,
+				D8AAD2EC2B1FF06400B681C6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D8F193522AB0CE60000A1B98 /* Build configuration list for PBXProject "Valet Pro" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
