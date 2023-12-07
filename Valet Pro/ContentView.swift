@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class Vehicle: ObservableObject {
+class Vehicle: ObservableObject,Equatable {
     var ticketNumber: Int
     @Published var amountPayed: Double
     @Published var color: String
@@ -31,18 +31,32 @@ class Vehicle: ObservableObject {
         self.validationOption = option
     }
     
+    static func == (lhs: Vehicle, rhs: Vehicle) -> Bool {
+            return lhs.ticketNumber == rhs.ticketNumber &&
+                   lhs.amountPayed == rhs.amountPayed &&
+                   lhs.color == rhs.color &&
+                   lhs.make == rhs.make &&
+                   lhs.model == rhs.model &&
+                   lhs.parkingSpot == rhs.parkingSpot &&
+                   lhs.validationOption == rhs.validationOption &&
+                   lhs.arrivalDate == rhs.arrivalDate
+        }
+    
 }
 
 struct ContentView: View {
-    @State private var ticketNumber = 264084
-    @State private var ticketList: [Vehicle] = []
-    @State private var completedTicketList: [Vehicle] = []
-    @State private var isAddingTicket = false
-    @State private var scrollOffset: CGFloat = 0
-    @State private var searchQuery = ""
-    @State private var isShowingSettings = false
-    @State private var isEdittingTicket = false
-    @State private var vehicleToEdit: Vehicle?
+    @State var ticketNumber = 264084
+    @State var ticketList: [Vehicle] = []
+    @State var completedTicketList: [Vehicle] = []
+    @State var isAddingTicket = false
+    @State var scrollOffset: CGFloat = 0
+    @State var searchQuery = ""
+    @State var isShowingSettings = false
+    @State var isEdittingTicket = false
+    @State var vehicleToEdit: Vehicle?
+    
+    
+    var onCreation: ((Vehicle) -> Void)?
 
     var filteredTickets: [Vehicle] {
             if searchQuery.isEmpty {
@@ -51,6 +65,11 @@ struct ContentView: View {
                 return ticketList.filter { "\($0.ticketNumber)".contains(searchQuery)}
             }
         }
+    
+    func addNewVehicle(_ vehicle: Vehicle) {
+            ticketList.append(vehicle)
+        }
+    
     
     var body: some View {
             VStack {
