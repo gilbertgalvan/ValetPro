@@ -149,7 +149,6 @@ struct ContentView: View {
         @State private var isPullViewPresented = false
         @Binding var ticketList: [Vehicle]
         @Binding var completedTicketList: [Vehicle]
-        //@State private var selectedVehicleForPull = Vehicle?
         
         var body: some View {
             HStack {
@@ -166,7 +165,6 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 Button("Pull") {
-                    //selectedVehicleForPull = vehicle
                     isConfirmationSheetPresented = true
                 }
                 .sheet(isPresented: $isConfirmationSheetPresented){
@@ -196,7 +194,6 @@ struct ContentView: View {
                 .sheet(isPresented: $isEdittingTicket) {
                     if let vehicle = vehicleToEdit {
                         EdittingTicketView(vehicle: vehicle)
-                        //isEdittingTicket = false
                     }
                 }
                 .foregroundColor(.green)
@@ -329,12 +326,9 @@ struct ContentView: View {
                         if let index = ticketList.firstIndex(where: { $0.ticketNumber == vehicle.ticketNumber }) {
                             let removedVehicle = ticketList.remove(at: index)
                             removedVehicle.setValidationOption(selectedValidation)
-                            // Add the removed vehicle to the completedTicketList
                             completedTicketList.append(removedVehicle)
-                            //double remove error ticketList.remove(at: index)
                             removedVehicle.amountPayed = calculateTotalCharge(timeInterval: Date().timeIntervalSince(removedVehicle.arrivalDate),validationOption: selectedValidation)
                         }
-                        
                     }
                     Spacer()
                     Button("Cancel"){}

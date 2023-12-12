@@ -45,6 +45,7 @@ class ContentViewModel: ObservableObject {
 final class Valet_ProTests: XCTestCase {
     
     //tests the inititialization of a vehicle object
+    //Test ID: #1
     func testVehicleInitialization() {
         let arrivalDate = Date()
         let vehicle = Vehicle(color: "Red", make: "Toyota", model: "Camry", parkingSpot: "A1", ticketNumber: 1, arrivalDate: arrivalDate, amountPayed: 0.0)
@@ -59,6 +60,7 @@ final class Valet_ProTests: XCTestCase {
         }
     
     //tests the functionality of the setValidationOption function for nil,1,2,and 0
+    //Test ID: #2
     func testSetValidationOption() {
         let vehicle = Vehicle(color: "Blue", make: "Honda", model: "Accord", parkingSpot: "B2", ticketNumber: 1, arrivalDate: Date(), amountPayed: 0.0)
 
@@ -81,6 +83,7 @@ final class Valet_ProTests: XCTestCase {
     //tests for the successful creation of a/multiple vehicles
     // as well as successfully appending to the array
     // 'ticketList'
+    //Test ID: #3
     func testCreateNewVehicle() {
         let viewModel = ContentViewModel()
         
@@ -114,6 +117,7 @@ final class Valet_ProTests: XCTestCase {
     }
     
     //tests the functionality of the ticketNumber being incremented by 1 each time a new ticket is issued
+    //Test ID: #4
     func testAddNewVehicleUpdatesTicketNumber() {
         let viewModel = ContentViewModel()
         let contentView = ContentView(viewModel: viewModel)
